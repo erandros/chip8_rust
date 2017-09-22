@@ -3,6 +3,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::process;
 
+#[allow(unused)]
 struct Cpu {
     ram: [u8; 4096],
     v: [u8; 16],
@@ -15,7 +16,7 @@ struct Cpu {
 }
 
 fn opcode_not_implemented(opcode: u16) {
-  print!("opcode not implemented: {:#x}", opcode);
+  println!("opcode not implemented: {:#x}", opcode);
   //EMBED_BREAKPOINT;
   process::exit(0);
 }
@@ -229,7 +230,7 @@ fn next_opcode(cpu: &mut Cpu) {
   let mut opcode: u16;
   opcode = ((cpu.ram[cpu.pc as usize]) as u16) << 8;
   opcode = opcode | (cpu.ram[(cpu.pc + 1) as usize]) as u16;
-  print!("current opcode: {:#x}", opcode);
+  println!("current opcode: {:#x}", opcode);
   cpu.pc += 2;
   cpu.stack[cpu.sp as usize] = cpu.pc;
        if opcode == 0x00E0 { cls(); }
@@ -244,15 +245,15 @@ fn next_opcode(cpu: &mut Cpu) {
   else if opcode <  0x8000 { add_vx_byte(cpu, opcode); }
   else if opcode <  0x9000 { 
     let d = opcode & 0x000F;
-         if d == 0x0000 { ld_vx_vy(cpu, opcode); }
-    else if d == 0x0001 { or_vx_vy(cpu, opcode); }
-    else if d == 0x0002 { and_vx_vy(cpu, opcode); }
-    else if d == 0x0003 { xor_vx_vy(cpu, opcode); }
-    else if d == 0x0004 { add_vx_vy(cpu, opcode); }
-    else if d == 0x0005 { sub_vx_vy(cpu, opcode); }
-    else if d == 0x0006 { shr_vx_vy(cpu, opcode); }
-    else if d == 0x0007 { subn_vx_vy(cpu, opcode); }
-    else if d == 0x000E { shl_vx_vy(cpu, opcode); }
+         if d == 0x00 { ld_vx_vy(cpu, opcode); }
+    else if d == 0x01 { or_vx_vy(cpu, opcode); }
+    else if d == 0x02 { and_vx_vy(cpu, opcode); }
+    else if d == 0x03 { xor_vx_vy(cpu, opcode); }
+    else if d == 0x04 { add_vx_vy(cpu, opcode); }
+    else if d == 0x05 { sub_vx_vy(cpu, opcode); }
+    else if d == 0x06 { shr_vx_vy(cpu, opcode); }
+    else if d == 0x07 { subn_vx_vy(cpu, opcode); }
+    else if d == 0xE { shl_vx_vy(cpu, opcode); }
   }
   else if opcode <  0xA000 { sne_vx_vy(cpu, opcode); }
   else if opcode <  0xB000 { ld_i_addr(cpu, opcode); }
